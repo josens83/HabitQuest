@@ -10,7 +10,21 @@ RPG 캐릭터 육성처럼 재미있게 습관을 형성하는 게이미피케�
 
 HabitQuest는 일본 모바일 게임 시장 1위 모노스트라이크의 게이미피케이션과 Duolingo의 스트릭 시스템을 결합하여, 사용자가 습관을 RPG 캐릭터 육성처럼 재미있게 형성할 수 있는 서비스입니다.
 
-### ✨ 주요 개선사항 (v0.2.0)
+### 🎉 최신 업데이트 (v0.3.0)
+
+- ✨ **완전한 데이터베이스 스키마**: 20개 모델, 700+ 라인 Prisma 스키마
+- 🎮 **퀘스트 시스템**: 일일/주간/이벤트 퀘스트 with 진행도 추적
+- 💎 **인벤토리 & 아이템**: 소비/장비/코스메틱 아이템, 상점 시스템
+- 🏆 **업적 시스템**: 6개 카테고리, 5개 등급, 자동 진행도 추적
+- 👥 **소셜 기능**: 친구, 길드, 리더보드 (비즈니스 로직 완성)
+- 💳 **결제 시스템**: Toss Payments & Stripe 통합
+- 🔐 **완전한 인증**: Kakao/Google/Apple OAuth with 자동 사용자 초기화
+- 🐳 **Docker 환경**: PostgreSQL + Redis, 원클릭 로컬 설정
+- 📊 **활동 로깅**: 14개 이벤트 타입 자동 추적
+
+👉 자세한 내용은 [FEATURES.md](./FEATURES.md)를 확인하세요!
+
+### ✨ 개선사항 (v0.2.0)
 
 - ✅ **테스트 커버리지 70%+**: Jest + React Testing Library
 - ✅ **코드 품질 자동화**: Husky + lint-staged + Prettier
@@ -23,10 +37,12 @@ HabitQuest는 일본 모바일 게임 시장 1위 모노스트라이크의 게�
 
 - ⚔️ **RPG 캐릭터 시스템**: 습관을 완료하고 경험치를 얻어 캐릭터 레벨업
 - 🔥 **스트릭 시스템**: 연속 달성 추적 및 마일스톤 보상
-- 🎯 **습관 퀘스트**: 다양한 난이도와 카테고리의 습관 관리
-- 📊 **통계 & 진행도**: 상세한 습관 분석 및 성장 추적
-- 👥 **소셜 기능**: 친구, 길드, 리더보드 (향후 구현)
-- 💎 **프리미엄 구독**: "기다리면 무료" 하이브리드 모델
+- 🎯 **퀘스트 시스템**: 일일/주간/이벤트 퀘스트 with 자동 진행도
+- 💎 **아이템 & 인벤토리**: 5개 등급, 6개 아이템 타입, 상점 시스템
+- 🏆 **업적 시스템**: 12개 목표 타입, 자동 해제 및 보상
+- 👥 **소셜 기능**: 친구, 길드, 리더보드 (4개 기간별)
+- 💳 **프리미엄 구독**: Toss/Stripe 결제, 3개 구독 플랜
+- 📊 **통계 & 분석**: 활동 로그, 리더보드, 길드 순위
 
 ## 🛠️ 기술 스택
 
@@ -55,10 +71,28 @@ HabitQuest는 일본 모바일 게임 시장 1위 모노스트라이크의 게�
 ### 사전 요구사항
 
 - Node.js 18.x 이상
-- PostgreSQL 14.x 이상
-- npm 또는 yarn
+- Docker & Docker Compose
+- Git
 
-### 설치
+### 🚀 빠른 시작 (권장)
+
+\`\`\`bash
+# 1. 저장소 클론
+git clone https://github.com/yourusername/habitquest.git
+cd habitquest
+
+# 2. 자동 환경 설정 (Docker, DB, 패키지 등 모두 자동)
+./scripts/setup-local.sh
+
+# 3. 개발 서버 시작
+npm run dev
+\`\`\`
+
+브라우저에서 [http://localhost:3000](http://localhost:3000)을 열어 확인하세요.
+
+📖 **자세한 로컬 개발 가이드**: [README.local.md](./README.local.md)
+
+### 수동 설치
 
 1. 저장소 클론
 \`\`\`bash
@@ -66,33 +100,33 @@ git clone https://github.com/yourusername/habitquest.git
 cd habitquest
 \`\`\`
 
-2. 패키지 설치
+2. Docker 시작
+\`\`\`bash
+docker-compose up -d
+\`\`\`
+
+3. 패키지 설치
 \`\`\`bash
 npm install
 \`\`\`
 
-3. 환경 변수 설정
+4. 환경 변수 설정
 \`\`\`bash
-cp .env.example .env.local
+cp .env.local.example .env.local
+# .env.local 파일을 열고 NEXTAUTH_SECRET 설정
+# openssl rand -base64 32
 \`\`\`
 
-`.env.local` 파일을 열고 데이터베이스 URL과 기타 필요한 값을 설정하세요.
-
-4. 데이터베이스 설정
+5. 데이터베이스 마이그레이션
 \`\`\`bash
-# Prisma 클라이언트 생성
-npm run db:generate
-
-# 데이터베이스 스키마 푸시
-npm run db:push
+npx prisma migrate dev --name init
+npx prisma db seed
 \`\`\`
 
-5. 개발 서버 실행
+6. 개발 서버 실행
 \`\`\`bash
 npm run dev
 \`\`\`
-
-브라우저에서 [http://localhost:3000](http://localhost:3000)을 열어 확인하세요.
 
 ## 📁 프로젝트 구조
 

@@ -32,9 +32,18 @@ model User {
   character     Character?
   habits        Habit[]
   streak        Streak?
+  inventoryItems InventoryItem[]
+  questProgress  QuestProgress[]
+  achievements   UserAchievement[]
+  subscriptionTransactions SubscriptionTransaction[]
+  notificationSettings NotificationSettings?
+  activityLogs  ActivityLog[]
 
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+
+  @@index([email])
+  @@index([subscription])
 }
 
 enum SubscriptionTier {
@@ -258,7 +267,7 @@ enum GuildRole {
   MEMBER
 }
 
-// 친구 관계 (나중 단계)
+// 친구 관계
 model Friendship {
   id          String   @id @default(cuid())
   requesterId String
@@ -269,6 +278,8 @@ model Friendship {
   updatedAt   DateTime @updatedAt
 
   @@unique([requesterId, addresseeId])
+  @@index([requesterId])
+  @@index([addresseeId])
 }
 
 enum FriendshipStatus {
@@ -276,4 +287,434 @@ enum FriendshipStatus {
   ACCEPTED
   DECLINED
   BLOCKED
+}
+
+// 퀘스트 시스템
+model Quest {
+  id          String      @id @default(cuid())
+
+  // 기본 정보
+  title       String
+  description String
+  type        QuestType
+  category    HabitCategory?
+  icon        String      @default("quest")
+
+  // 난이도 및 보상
+  difficulty  Difficulty  @default(MEDIUM)
+  expReward   Int
+  goldReward  Int
+  gemReward   Int         @default(0)
+
+  // 아이템 보상 (JSON으로 저장)
+  itemRewards Json?       // { itemId: string, quantity: number }[]
+
+  // 목표 설정
+  targetCount Int         @default(1)
+  targetType  QuestTargetType
+  targetValue String?     // 특정 습관 ID, 카테고리 등
+
+  // 유효기간
+  startDate   DateTime?
+  endDate     DateTime?
+
+  // 반복성
+  isRepeatable Boolean    @default(false)
+  resetPeriod  QuestResetPeriod?
+
+  // 사용자 진행상황
+  progress    QuestProgress[]
+
+  isActive    Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@index([type, isActive])
+  @@index([startDate, endDate])
+}
+
+enum QuestType {
+  DAILY          // 일일 퀘스트
+  WEEKLY         // 주간 퀘스트
+  EVENT          // 이벤트 퀘스트
+  ACHIEVEMENT    // 업적 퀘스트
+  STORY          // 스토리 퀘스트
+}
+
+enum QuestTargetType {
+  COMPLETE_HABITS        // N개의 습관 완료
+  COMPLETE_CATEGORY      // 특정 카테고리 습관 N개 완료
+  COMPLETE_SPECIFIC      // 특정 습관 완료
+  MAINTAIN_STREAK        // N일 연속 달성
+  REACH_LEVEL            // 특정 레벨 도달
+  EARN_EXP               // N 경험치 획득
+  EARN_GOLD              // N 골드 획득
+  COMPLETE_ALL_DAILY     // 모든 일일 습관 완료
+}
+
+enum QuestResetPeriod {
+  DAILY
+  WEEKLY
+  MONTHLY
+  NEVER
+}
+
+// 퀘스트 진행상황
+model QuestProgress {
+  id          String   @id @default(cuid())
+  questId     String
+  quest       Quest    @relation(fields: [questId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // 진행도
+  currentCount Int     @default(0)
+  isCompleted  Boolean @default(false)
+  completedAt  DateTime?
+
+  // 보상 수령
+  rewardClaimed Boolean @default(false)
+  claimedAt     DateTime?
+
+  // 리셋 추적
+  resetAt      DateTime?
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([questId, userId, resetAt])
+  @@index([userId, isCompleted])
+}
+
+// 아이템 시스템
+model Item {
+  id          String     @id @default(cuid())
+
+  // 기본 정보
+  name        String
+  description String
+  icon        String
+  rarity      ItemRarity @default(COMMON)
+
+  // 아이템 타입
+  type        ItemType
+  category    ItemCategory
+
+  // 효과 (JSON으로 저장)
+  effects     Json?      // { type: string, value: number, duration?: number }[]
+
+  // 거래 및 가격
+  isTradeable Boolean    @default(false)
+  isStackable Boolean    @default(true)
+  maxStack    Int        @default(99)
+  buyPrice    Int?
+  sellPrice   Int?
+  gemPrice    Int?
+
+  // 사용 제한
+  requiredLevel Int?
+  requiredClass CharacterClass?
+
+  // 인벤토리 관계
+  inventory   InventoryItem[]
+
+  isAvailable Boolean    @default(true)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([type, category])
+}
+
+enum ItemRarity {
+  COMMON
+  UNCOMMON
+  RARE
+  EPIC
+  LEGENDARY
+}
+
+enum ItemType {
+  CONSUMABLE     // 소비 아이템
+  EQUIPMENT      // 장비
+  COSMETIC       // 코스메틱
+  BOOST          // 부스트 아이템
+  MATERIAL       // 재료
+  SPECIAL        // 특수 아이템
+}
+
+enum ItemCategory {
+  // 소비 아이템
+  ENERGY_RESTORE     // 에너지 회복
+  STREAK_FREEZE      // 스트릭 프리즈
+  EXP_BOOST          // 경험치 부스트
+  GOLD_BOOST         // 골드 부스트
+
+  // 장비/코스메틱
+  COSTUME            // 의상
+  ACCESSORY          // 악세서리
+  PET                // 펫
+  AURA               // 오라
+  TITLE              // 칭호
+
+  // 특수
+  LOOT_BOX           // 랜덤 박스
+  QUEST_ITEM         // 퀘스트 아이템
+  CURRENCY           // 재화
+}
+
+// 인벤토리
+model InventoryItem {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  itemId      String
+  item        Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  quantity    Int      @default(1)
+
+  // 장착 상태 (장비/코스메틱용)
+  isEquipped  Boolean  @default(false)
+
+  // 만료 (부스트 아이템 등)
+  expiresAt   DateTime?
+
+  obtainedAt  DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([userId, itemId])
+  @@index([userId])
+}
+
+// 업적 시스템
+model Achievement {
+  id          String   @id @default(cuid())
+
+  // 기본 정보
+  title       String
+  description String
+  icon        String   @default("trophy")
+  category    AchievementCategory
+
+  // 등급
+  tier        AchievementTier @default(BRONZE)
+
+  // 목표
+  targetType  AchievementTargetType
+  targetValue Int
+
+  // 보상
+  expReward   Int      @default(0)
+  goldReward  Int      @default(0)
+  gemReward   Int      @default(0)
+  titleReward String?  // 칭호 보상
+  itemRewards Json?    // 아이템 보상
+
+  // 표시 설정
+  isHidden    Boolean  @default(false)  // 히든 업적
+  isSecret    Boolean  @default(false)  // 비밀 업적
+
+  // 사용자 업적
+  userAchievements UserAchievement[]
+
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([category, isActive])
+}
+
+enum AchievementCategory {
+  HABITS         // 습관 관련
+  STREAKS        // 연속 달성
+  SOCIAL         // 소셜
+  COLLECTION     // 수집
+  PROGRESSION    // 성장
+  SPECIAL        // 특별
+}
+
+enum AchievementTier {
+  BRONZE
+  SILVER
+  GOLD
+  PLATINUM
+  DIAMOND
+}
+
+enum AchievementTargetType {
+  TOTAL_COMPLETIONS      // 총 완료 횟수
+  LONGEST_STREAK         // 최장 연속 달성
+  REACH_LEVEL            // 레벨 도달
+  COMPLETE_QUESTS        // 퀘스트 완료 수
+  EARN_TOTAL_EXP         // 총 경험치
+  EARN_TOTAL_GOLD        // 총 골드
+  COLLECT_ITEMS          // 아이템 수집
+  FRIEND_COUNT           // 친구 수
+  GUILD_CONTRIBUTION     // 길드 기여도
+  PERFECT_WEEK           // 완벽한 주 (모든 습관 완료)
+  EARLY_BIRD             // 아침 습관 완료
+  NIGHT_OWL              // 저녁 습관 완료
+}
+
+// 사용자 업적
+model UserAchievement {
+  id            String      @id @default(cuid())
+  userId        String
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievementId String
+  achievement   Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+
+  currentProgress Int       @default(0)
+  isCompleted     Boolean   @default(false)
+  completedAt     DateTime?
+
+  notified        Boolean   @default(false)
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@unique([userId, achievementId])
+  @@index([userId, isCompleted])
+}
+
+// 결제/구독 트랜잭션
+model SubscriptionTransaction {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // 구독 정보
+  tier            SubscriptionTier
+  previousTier    SubscriptionTier?
+
+  // 결제 정보
+  provider        PaymentProvider
+  transactionId   String   @unique  // 외부 결제 시스템의 ID
+  amount          Int                // 결제 금액 (원 단위)
+  currency        String   @default("KRW")
+
+  // 기간
+  startDate       DateTime
+  endDate         DateTime
+
+  // 상태
+  status          TransactionStatus @default(PENDING)
+
+  // 결제 메타데이터
+  metadata        Json?
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([userId, status])
+  @@index([transactionId])
+}
+
+enum PaymentProvider {
+  TOSS_PAYMENTS
+  STRIPE
+  APPLE_IAP
+  GOOGLE_PLAY
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  CANCELLED
+  REFUNDED
+}
+
+// 리더보드 (캐싱용)
+model Leaderboard {
+  id        String         @id @default(cuid())
+  type      LeaderboardType
+  period    LeaderboardPeriod
+
+  // 순위 데이터 (JSON)
+  rankings  Json           // { userId, value, rank }[]
+
+  // 유효기간
+  validUntil DateTime
+
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  @@unique([type, period])
+  @@index([validUntil])
+}
+
+enum LeaderboardType {
+  LEVEL          // 레벨 랭킹
+  STREAK         // 연속 달성
+  TOTAL_EXP      // 총 경험치
+  WEEKLY_POINTS  // 주간 포인트
+  GUILD_POINTS   // 길드 포인트
+}
+
+enum LeaderboardPeriod {
+  DAILY
+  WEEKLY
+  MONTHLY
+  ALL_TIME
+}
+
+// 알림 설정
+model NotificationSettings {
+  id        String  @id @default(cuid())
+  userId    String  @unique
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // 알림 종류별 설정
+  habitReminders      Boolean @default(true)
+  streakWarnings      Boolean @default(true)
+  questUpdates        Boolean @default(true)
+  socialNotifications Boolean @default(true)
+  achievements        Boolean @default(true)
+  promotions          Boolean @default(false)
+
+  // 알림 시간
+  quietHoursStart     String? // "22:00"
+  quietHoursEnd       String? // "08:00"
+
+  // 푸시 알림
+  pushEnabled         Boolean @default(false)
+  pushToken           String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// 활동 로그 (분석용)
+model ActivityLog {
+  id        String       @id @default(cuid())
+  userId    String
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  eventType ActivityEventType
+  eventData Json?
+
+  ipAddress String?
+  userAgent String?
+
+  createdAt DateTime     @default(now())
+
+  @@index([userId, createdAt])
+  @@index([eventType, createdAt])
+}
+
+enum ActivityEventType {
+  USER_LOGIN
+  USER_LOGOUT
+  HABIT_COMPLETED
+  QUEST_COMPLETED
+  LEVEL_UP
+  ACHIEVEMENT_UNLOCKED
+  ITEM_PURCHASED
+  ITEM_USED
+  SUBSCRIPTION_STARTED
+  SUBSCRIPTION_RENEWED
+  SUBSCRIPTION_CANCELLED
+  FRIEND_ADDED
+  GUILD_JOINED
+  GUILD_LEFT
 }

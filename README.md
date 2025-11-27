@@ -1,10 +1,23 @@
 # 🎮 HabitQuest - 습관을 게임처럼, 성장을 모험처럼
 
+[![CI](https://github.com/yourusername/habitquest/actions/workflows/ci.yml/badge.svg)](https://github.com/yourusername/habitquest/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/yourusername/habitquest/branch/main/graph/badge.svg)](https://codecov.io/gh/yourusername/habitquest)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 RPG 캐릭터 육성처럼 재미있게 습관을 형성하는 게이미피케이션 앱
 
 ## 📋 프로젝트 개요
 
 HabitQuest는 일본 모바일 게임 시장 1위 모노스트라이크의 게이미피케이션과 Duolingo의 스트릭 시스템을 결합하여, 사용자가 습관을 RPG 캐릭터 육성처럼 재미있게 형성할 수 있는 서비스입니다.
+
+### ✨ 주요 개선사항 (v0.2.0)
+
+- ✅ **테스트 커버리지 70%+**: Jest + React Testing Library
+- ✅ **코드 품질 자동화**: Husky + lint-staged + Prettier
+- ✅ **입력 검증 강화**: Zod 스키마를 통한 타입 안전 검증
+- ✅ **CI/CD 파이프라인**: GitHub Actions 자동화
+- ✅ **포괄적인 문서화**: CONTRIBUTING.md, ARCHITECTURE.md, CODE_OF_CONDUCT.md
+- ✅ **보안 강화**: 환경 변수 검증, 자동 보안 스캔
 
 ### 주요 기능
 
@@ -217,13 +230,29 @@ npm run db:studio        # Prisma Studio 실행
 
 ## 🤝 기여하기
 
-기여를 환영합니다! Pull Request를 보내주세요.
+기여를 환영합니다! 자세한 내용은 [CONTRIBUTING.md](./CONTRIBUTING.md)를 참조하세요.
+
+### 빠른 시작
 
 1. Fork the Project
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+3. Commit your Changes (`git commit -m 'feat: add some amazing feature'`)
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
+
+### 품질 기준
+
+- ✅ 모든 테스트 통과 (70%+ 커버리지)
+- ✅ ESLint + Prettier 통과
+- ✅ TypeScript strict 모드 준수
+- ✅ Conventional Commits 사용
+
+### 문서
+
+- [기여 가이드](./CONTRIBUTING.md) - 기여 방법 상세 안내
+- [행동 강령](./CODE_OF_CONDUCT.md) - 커뮤니티 행동 강령
+- [아키텍처 문서](./ARCHITECTURE.md) - 시스템 아키텍처 설명
+- [배포 가이드](./DEPLOYMENT.md) - 배포 방법 및 환경 설정
 
 ## 📝 라이선스
 

@@ -1,0 +1,279 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// 사용자
+model User {
+  id            String    @id @default(cuid())
+  email         String?   @unique
+  emailVerified DateTime?
+  name          String?
+  image         String?
+
+  // 구독 정보
+  subscription  SubscriptionTier @default(FREE)
+  subscriptionEndsAt DateTime?
+
+  // 에너지 시스템
+  currentEnergy Int      @default(5)
+  lastEnergyRegen DateTime @default(now())
+
+  // 관계
+  accounts      Account[]
+  sessions      Session[]
+  character     Character?
+  habits        Habit[]
+  streak        Streak?
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+enum SubscriptionTier {
+  FREE
+  PREMIUM
+  FAMILY
+}
+
+// NextAuth Account
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+// NextAuth Session
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// 캐릭터 시스템
+model Character {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name      String
+  class     CharacterClass @default(RANGER)
+  level     Int      @default(1)
+  exp       Int      @default(0)
+
+  // 스탯 (습관 카테고리별로 성장)
+  strength     Int   @default(1) // 운동 습관
+  intelligence Int   @default(1) // 학습 습관
+  vitality     Int   @default(1) // 건강 습관
+  spirit       Int   @default(1) // 마음챙김 습관
+  charisma     Int   @default(1) // 사회적 습관
+
+  // 외형 커스터마이징
+  avatar       String @default("default")
+  costume      String @default("starter")
+  accessory    String @default("none")
+  pet          String?
+  aura         String?
+
+  // 칭호/업적
+  titles       String[]
+  activeTitle  String?
+
+  // 재화
+  gems         Int    @default(0)
+  gold         Int    @default(0)
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+enum CharacterClass {
+  WARRIOR  // 피지컬 중심
+  SCHOLAR  // 학습 중심
+  HEALER   // 건강/힐링 중심
+  SAGE     // 마음챙김 중심
+  RANGER   // 균형형
+}
+
+// 습관 (퀘스트)
+model Habit {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // 기본 정보
+  name        String
+  description String?
+  category    HabitCategory
+  icon        String   @default("target")
+  color       String   @default("#6366F1")
+
+  // 빈도 설정
+  frequencyType FrequencyType @default(DAILY)
+  daysOfWeek    Int[]         // 0-6 (일-토)
+  timesPerDay   Int           @default(1)
+  targetTime    String?       // "07:00"
+
+  // 게이미피케이션
+  difficulty    Difficulty    @default(MEDIUM)
+  expReward     Int
+  goldReward    Int
+
+  // 스탯 보너스
+  statBonusStrength     Int @default(0)
+  statBonusIntelligence Int @default(0)
+  statBonusVitality     Int @default(0)
+  statBonusSpirit       Int @default(0)
+  statBonusCharisma     Int @default(0)
+
+  // 트래킹
+  currentStreak   Int      @default(0)
+  longestStreak   Int      @default(0)
+  totalCompletions Int     @default(0)
+
+  // 완료 기록
+  completions     HabitCompletion[]
+
+  isArchived      Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([userId, isArchived])
+}
+
+enum HabitCategory {
+  FITNESS       // 운동
+  LEARNING      // 학습
+  HEALTH        // 건강
+  MINDFULNESS   // 마음챙김
+  SOCIAL        // 사회적
+  PRODUCTIVITY  // 생산성
+  CREATIVITY    // 창작
+}
+
+enum FrequencyType {
+  DAILY
+  WEEKLY
+  CUSTOM
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+  LEGENDARY
+}
+
+// 습관 완료 기록
+model HabitCompletion {
+  id          String   @id @default(cuid())
+  habitId     String
+  habit       Habit    @relation(fields: [habitId], references: [id], onDelete: Cascade)
+
+  completedAt DateTime @default(now())
+  note        String?
+
+  // 보상 스냅샷
+  expGained   Int
+  goldGained  Int
+
+  @@index([habitId, completedAt])
+}
+
+// 스트릭 시스템
+model Streak {
+  id                String   @id @default(cuid())
+  userId            String   @unique
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  currentStreak     Int      @default(0)
+  longestStreak     Int      @default(0)
+  lastActiveDate    DateTime @default(now())
+
+  // 스트릭 프리즈
+  streakFreezes     Int      @default(0)
+  freezeUsedToday   Boolean  @default(false)
+
+  // 마일스톤 (달성한 일수들)
+  milestonesReached Int[]
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+// 길드 (나중 단계에서 구현)
+model Guild {
+  id              String   @id @default(cuid())
+  name            String
+  emblem          String   @default("default")
+  maxMembers      Int      @default(10)
+
+  weeklyPoints    Int      @default(0)
+  totalPoints     Int      @default(0)
+
+  members         GuildMember[]
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model GuildMember {
+  id        String   @id @default(cuid())
+  guildId   String
+  guild     Guild    @relation(fields: [guildId], references: [id], onDelete: Cascade)
+
+  userId    String
+  role      GuildRole @default(MEMBER)
+
+  joinedAt  DateTime @default(now())
+
+  @@unique([guildId, userId])
+}
+
+enum GuildRole {
+  LEADER
+  OFFICER
+  MEMBER
+}
+
+// 친구 관계 (나중 단계)
+model Friendship {
+  id          String   @id @default(cuid())
+  requesterId String
+  addresseeId String
+  status      FriendshipStatus @default(PENDING)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([requesterId, addresseeId])
+}
+
+enum FriendshipStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  BLOCKED
+}

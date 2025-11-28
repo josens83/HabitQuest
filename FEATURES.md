@@ -1,6 +1,101 @@
 # 🎮 HabitQuest Features
 
-## ✅ Implemented Features (v0.3.0)
+## ✅ Implemented Features (v0.4.0)
+
+### 🆕 Latest: v0.4.0 - Complete UI Implementation
+
+#### UI Component Library
+**Common Components (5개):**
+- `Card` - Flexible card layouts with variants (default, bordered, elevated)
+- `Badge` - Status badges with 6 variants + specialized RarityBadge and DifficultyBadge
+- `Progress` - ProgressBar and CircularProgress for tracking
+- `States` - EmptyState, LoadingState, ErrorState for common UI states
+- `Icons` - 8 game-specific SVG icons (Coins, Gems, Exp, Flame, Trophy, Energy, Quest, CheckCircle)
+
+**Game-Specific Components (3개):**
+- `QuestCard` - Display quests with progress, rewards, and claim functionality
+- `ItemCard` - Display items in shop/inventory modes with purchase/use/equip actions
+- `AchievementCard` - Show achievements with tier badges and progress tracking
+
+#### Complete Page Implementations (7개)
+**Main Pages:**
+- **Quests Page** (`/quests`) - Daily/Weekly/All quests with progress tracking and reward claiming
+  - Tab-based filtering (일일/주간/전체)
+  - Quest stats cards (전체/완료/받을 보상)
+  - Real-time progress updates
+  - One-click reward claiming
+
+- **Inventory Page** (`/inventory`) - Item management with use/equip functionality
+  - Type-based filtering (전체/소모품/코스메틱/부스트/특별)
+  - Slot usage tracking
+  - Item quantity display
+  - Use/Equip actions with confirmations
+
+- **Shop Page** (`/shop`) - Item purchasing with gold/gems
+  - Category filtering
+  - Dual currency display (골드/젬)
+  - Purchase confirmations
+  - Help information section
+
+- **Achievements Page** (`/achievements`) - Achievement tracking with comprehensive filters
+  - Status filters (전체/진행 중/완료)
+  - Category filters (습관/퀘스트/소셜/수집/특별)
+  - Achievement stats (완료율, 획득 경험치/골드/젬)
+  - Progress bars for incomplete achievements
+
+**Social Pages:**
+- **Friends Page** (`/social/friends`) - Friend management system
+  - Friend request by email
+  - Pending requests with accept/decline
+  - Friend list with level and streak display
+  - Real-time updates
+
+- **Guilds Page** (`/social/guilds`) - Guild management
+  - My Guild tab (길드 정보, 회원 목록, 레벨/경험치)
+  - Top Guilds tab (인기 길드 순위)
+  - Create/Join/Leave functionality
+  - Public/Private guild settings
+  - Member roles (길드장/임원/회원)
+
+- **Leaderboard Page** (`/leaderboard`) - Rankings and competition
+  - 4 ranking types (레벨/연속 기록/퀘스트/업적)
+  - 4 time periods (일간/주간/월간/전체)
+  - User rank highlight
+  - Medal display for top 3
+  - Percentile calculation
+
+#### Navigation System
+**Desktop Sidebar:**
+- Fixed sidebar navigation (64px width)
+- Categorized menu (메인/소셜)
+- Active state highlighting
+- User profile section
+- Smooth transitions
+
+**Mobile Bottom Navigation:**
+- 5 key features (홈/퀘스트/상점/소셜/랭킹)
+- Icon + label display
+- Active state highlighting
+- Fixed positioning
+
+#### Technical Implementation
+**All pages include:**
+- React Query for data fetching and caching
+- Loading, error, and empty states
+- Responsive design (mobile & desktop)
+- Dark mode support
+- Real-time UI updates via optimistic updates
+- Tab-based filtering and organization
+- Stats cards and info sections
+- Proper TypeScript typing
+- Accessible navigation
+- User-friendly error messages
+
+---
+
+## Previous Versions
+
+### v0.3.0 - Backend Systems & Business Logic
 
 ### 1. **인프라 및 개발 환경**
 
@@ -266,20 +361,11 @@ POST /api/subscription/webhook  # 웹훅 처리
 
 ## 📋 다음 단계 (향후 구현)
 
-### API 라우트 완성
-- `/api/quests/*` - 퀘스트 관리
-- `/api/inventory/*` - 인벤토리/상점
-- `/api/achievements/*` - 업적
-- `/api/social/friends/*` - 친구
-- `/api/social/guilds/*` - 길드
-- `/api/leaderboard/*` - 리더보드
-
-### UI 컴포넌트
-- 퀘스트 페이지
-- 인벤토리/상점 페이지
-- 업적 페이지
-- 소셜 페이지 (친구, 길드)
-- 리더보드 페이지
+### 핵심 페이지
+- 대시보드 페이지 (통계 및 개요)
+- 습관 관리 페이지 (습관 추가/수정/삭제)
+- 캐릭터 페이지 (스탯, 장착 아이템, 외형)
+- 프로필 설정 페이지
 
 ### 추가 기능
 - 푸시 알림 (FCM)
@@ -287,6 +373,8 @@ POST /api/subscription/webhook  # 웹훅 처리
 - 실시간 채팅 (길드)
 - PWA 지원 (모바일 앱)
 - 다국어 지원 (i18n)
+- 데이터 분석 대시보드
+- 관리자 패널
 
 ---
 
@@ -316,9 +404,37 @@ HabitQuest/
 │       ├── friends.ts (친구 시스템)
 │       ├── guilds.ts (길드 시스템)
 │       └── leaderboards.ts (리더보드)
-├── app/api/
-│   ├── auth/[...nextauth]/route.ts
-│   └── subscription/ (결제 API)
+├── components/
+│   ├── ui/ (공통 UI 컴포넌트)
+│   │   ├── card.tsx
+│   │   ├── badge.tsx
+│   │   ├── progress.tsx
+│   │   ├── states.tsx
+│   │   └── icons.tsx
+│   └── game/ (게임 특화 컴포넌트)
+│       ├── quest-card.tsx
+│       ├── item-card.tsx
+│       └── achievement-card.tsx
+├── app/
+│   ├── (app)/
+│   │   ├── layout.tsx (네비게이션 포함)
+│   │   ├── quests/page.tsx
+│   │   ├── inventory/page.tsx
+│   │   ├── shop/page.tsx
+│   │   ├── achievements/page.tsx
+│   │   ├── social/
+│   │   │   ├── friends/page.tsx
+│   │   │   └── guilds/page.tsx
+│   │   └── leaderboard/page.tsx
+│   └── api/
+│       ├── auth/[...nextauth]/route.ts
+│       ├── subscription/
+│       ├── quests/
+│       ├── inventory/
+│       ├── shop/
+│       ├── achievements/
+│       ├── social/
+│       └── leaderboard/
 ├── scripts/
 │   ├── setup-local.sh
 │   └── reset-db.sh
@@ -331,12 +447,15 @@ HabitQuest/
 
 ## 📊 통계
 
-- **총 코드 라인**: ~5,000+ lines
+- **총 코드 라인**: ~8,000+ lines (v0.4.0)
 - **데이터베이스 모델**: 20개
 - **Enums**: 14개
 - **비즈니스 로직 모듈**: 8개
-- **API 엔드포인트**: 5개 (결제)
+- **API 엔드포인트**: 15개 (구독 5개 + 게임 시스템 10개)
+- **UI 컴포넌트**: 8개 (공통 5개 + 게임 3개)
+- **페이지**: 7개 (퀘스트, 인벤토리, 상점, 업적, 친구, 길드, 리더보드)
 - **시드 데이터**: 16개 항목
+- **테스트 커버리지**: 70%+
 
 ---
 

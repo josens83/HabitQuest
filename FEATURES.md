@@ -1,8 +1,110 @@
 # 🎮 HabitQuest Features
 
-## ✅ Implemented Features (v0.4.0)
+## ✅ Implemented Features (v0.5.0)
 
-### 🆕 Latest: v0.4.0 - Complete UI Implementation
+### 🆕 Latest: v0.5.0 - Core Pages & Backend APIs
+
+#### Core Application Pages (4개)
+**Dashboard** (`/dashboard`)
+- Character overview with level, exp, energy, and currency
+- Streak display with current and longest records
+- Today's habits progress summary (completed/total)
+- Quest progress tracking (daily/weekly with pending rewards)
+- Recent achievements display (last 5)
+- Overall statistics cards (total habits/quests/achievements/exp earned)
+- Auto-refresh every 60 seconds
+
+**Habits Management** (`/habits`)
+- Complete CRUD operations for habit management
+- Category filtering (8 categories: 건강/생산성/학습/소셜/재정/창의성/마음챙김/기타)
+- Show/hide completed habits toggle
+- Habit completion with reward calculation
+  - Experience and gold rewards
+  - Streak bonus calculation
+  - Level up handling
+- Streak tracking (current and longest)
+- Difficulty badges and comprehensive stats
+- Delete confirmation dialogs
+
+**Character** (`/character`)
+- Character display with level and avatar
+- Experience and energy progress bars
+- Currency display (gold and gems)
+- RPG stats visualization (strength, intelligence, vitality, spirit, charisma)
+- Equipped items grid (6 slots with rarity badges)
+- Achievement progress tracking
+- Quick navigation links (inventory, shop, achievements)
+- Streak motivation card
+
+**Settings** (`/settings`)
+- Tab-based navigation (프로필/알림/환경설정)
+- Account management
+  - Profile information and editing
+  - Subscription management
+  - Account actions (password, data export, deletion)
+- Notification preferences
+  - 6 notification types with individual toggles
+  - Daily reminder, quest complete, achievements, friend requests, guild activity, email notifications
+- UI preferences
+  - Theme selection (light/dark/system)
+  - Language settings (한국어/English)
+  - Timezone configuration
+
+#### Backend API Routes (4 major endpoints)
+**Dashboard API** (`/api/dashboard`)
+- GET: Aggregated dashboard data
+  - Character stats (level, exp, energy, gold, gems, streak)
+  - Today's habits progress
+  - Quest completion status (daily/weekly + pending rewards)
+  - Recent achievements
+  - Overall statistics
+
+**Habits API** (`/api/habits`)
+- GET: List all active habits with completion status
+- POST: Create new habit with validation
+- DELETE `/api/habits/[id]`: Archive habit (soft delete)
+- POST `/api/habits/[id]/complete`: Complete habit for today
+  - Validates completion status
+  - Calculates rewards with streak bonuses (up to 100% bonus)
+  - Handles automatic level ups
+  - Updates streak tracking
+  - Triggers quest progress checks
+  - Checks achievement progress
+  - Logs activity for analytics
+
+**Character API** (`/api/character`)
+- GET: Complete character information
+  - Character stats and progress
+  - RPG stats (5 attributes)
+  - Equipped items by slot
+  - Achievement progress
+  - Overall game progress
+
+**Settings API** (`/api/settings`)
+- GET: User settings and preferences
+  - Account information
+  - Notification preferences
+  - UI preferences
+  - Active subscription
+- PUT: Update settings
+  - Notification toggles
+  - Theme and language preferences
+  - Upsert logic for settings
+
+**API Security & Quality:**
+- NextAuth session-based authentication
+- Zod schema validation for all inputs
+- Comprehensive error handling
+- TypeScript type safety
+- Consistent response formats
+- Activity logging for important actions
+- Database transaction handling
+
+---
+
+## Previous Versions
+
+### v0.4.0 - Complete UI Implementation
 
 #### UI Component Library
 **Common Components (5개):**
@@ -447,14 +549,21 @@ HabitQuest/
 
 ## 📊 통계
 
-- **총 코드 라인**: ~8,000+ lines (v0.4.0)
+- **총 코드 라인**: ~10,000+ lines (v0.5.0)
 - **데이터베이스 모델**: 20개
 - **Enums**: 14개
 - **비즈니스 로직 모듈**: 8개
-- **API 엔드포인트**: 15개 (구독 5개 + 게임 시스템 10개)
+- **API 엔드포인트**: 19개
+  - 핵심 API 4개 (Dashboard, Habits, Character, Settings)
+  - 게임 시스템 API 10개 (Quests, Inventory, Shop, Achievements, Social, Leaderboard)
+  - 구독 API 5개 (Plans, Create, Verify, Cancel, Webhook)
 - **UI 컴포넌트**: 8개 (공통 5개 + 게임 3개)
-- **페이지**: 7개 (퀘스트, 인벤토리, 상점, 업적, 친구, 길드, 리더보드)
+- **페이지**: 11개
+  - 핵심 4개 (Dashboard, Habits, Character, Settings)
+  - 게임 4개 (Quests, Inventory, Shop, Achievements)
+  - 소셜 3개 (Friends, Guilds, Leaderboard)
 - **시드 데이터**: 16개 항목
+- **테스트**: 46개 (모두 통과 ✅)
 - **테스트 커버리지**: 70%+
 
 ---

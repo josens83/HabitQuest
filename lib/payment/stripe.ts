@@ -5,7 +5,7 @@ import {
   VerifyPaymentParams,
   WebhookPayload,
 } from './types'
-import prisma from '@/lib/prisma'
+import { prisma } from '@/lib/prisma'
 
 export class StripeProvider implements IPaymentProvider {
   private publicKey: string

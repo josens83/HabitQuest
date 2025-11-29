@@ -255,10 +255,16 @@ export default function HabitsPage() {
               ? '새로운 습관을 추가하여 시작해보세요!'
               : '완료하지 않은 습관이 없습니다. 모든 습관을 완료했습니다! 🎉'
           }
-          action={{
-            label: '새 습관 추가',
-            onClick: () => alert('습관 추가 모달 (향후 구현)'),
-          }}
+          action={
+            showCompleted ? (
+              <button
+                onClick={() => alert('습관 추가 모달 (향후 구현)')}
+                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+              >
+                새 습관 추가
+              </button>
+            ) : undefined
+          }
         />
       )}
 

@@ -1,5 +1,6 @@
-import prisma from '@/lib/prisma'
-import { AchievementTargetType } from '@prisma/client'
+import { prisma } from '@/lib/prisma'
+
+type AchievementTargetType = 'TOTAL_COMPLETIONS' | 'LONGEST_STREAK' | 'TOTAL_HABITS' | 'TOTAL_QUESTS'
 
 export interface AchievementUnlockResult {
   unlocked: boolean

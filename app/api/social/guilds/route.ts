@@ -9,7 +9,7 @@ import {
   getTopGuilds,
 } from '@/lib/social/guilds'
 import { z } from 'zod'
-import prisma from '@/lib/prisma'
+import { prisma } from '@/lib/prisma'
 
 export async function GET(request: NextRequest) {
   try {

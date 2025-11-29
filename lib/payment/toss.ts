@@ -5,7 +5,7 @@ import {
   VerifyPaymentParams,
   WebhookPayload,
 } from './types'
-import prisma from '@/lib/prisma'
+import { prisma } from '@/lib/prisma'
 
 export class TossPaymentsProvider implements IPaymentProvider {
   private clientKey: string

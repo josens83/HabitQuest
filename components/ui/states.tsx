@@ -66,13 +66,20 @@ interface ErrorStateProps {
   title?: string
   message: string
   retry?: () => void
+  action?: {
+    label: string
+    onClick: () => void
+  }
 }
 
 export function ErrorState({
   title = '오류가 발생했습니다',
   message,
   retry,
+  action,
 }: ErrorStateProps) {
+  const buttonAction = action || (retry ? { label: '다시 시도', onClick: retry } : null)
+
   return (
     <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
       <div className="mb-4 text-red-500">
@@ -96,12 +103,12 @@ export function ErrorState({
       <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 max-w-sm">
         {message}
       </p>
-      {retry && (
+      {buttonAction && (
         <button
-          onClick={retry}
+          onClick={buttonAction.onClick}
           className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
         >
-          다시 시도
+          {buttonAction.label}
         </button>
       )}
     </div>

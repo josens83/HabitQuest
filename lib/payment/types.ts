@@ -1,4 +1,6 @@
-import { PaymentProvider, SubscriptionTier, TransactionStatus } from '@prisma/client'
+type PaymentProvider = 'TOSS_PAYMENTS' | 'STRIPE' | 'PAYPAL'
+export type SubscriptionTier = 'FREE' | 'PREMIUM' | 'FAMILY'
+type TransactionStatus = 'PENDING' | 'COMPLETED' | 'FAILED' | 'CANCELLED'
 
 export interface PaymentResult {
   success: boolean

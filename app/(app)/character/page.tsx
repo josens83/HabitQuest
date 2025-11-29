@@ -164,9 +164,9 @@ export default function CharacterPage() {
                       </span>
                     </div>
                     <ProgressBar
-                      current={data.character.currentExp}
+                      value={data.character.currentExp}
                       max={data.character.expToNextLevel}
-                      variant="info"
+                      variant="default"
                       size="lg"
                       showPercentage
                     />
@@ -290,7 +290,7 @@ export default function CharacterPage() {
                     </span>
                   </div>
                   <ProgressBar
-                    current={data.achievements.unlocked}
+                    value={data.achievements.unlocked}
                     max={data.achievements.total}
                     variant="warning"
                     showPercentage

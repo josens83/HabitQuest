@@ -1,5 +1,7 @@
-import prisma from '@/lib/prisma'
-import { LeaderboardType, LeaderboardPeriod } from '@prisma/client'
+import { prisma } from '@/lib/prisma'
+
+type LeaderboardType = 'LEVEL' | 'EXP' | 'STREAK' | 'HABITS' | 'QUESTS'
+type LeaderboardPeriod = 'ALL_TIME' | 'MONTHLY' | 'WEEKLY' | 'DAILY'
 
 export interface LeaderboardEntry {
   userId: string
@@ -31,8 +33,8 @@ export async function updateLeaderboard(
       })
 
       rankings = levelUsers
-        .filter((u) => u.character)
-        .map((u, i) => ({
+        .filter((u: any) => u.character)
+        .map((u: any, i: number) => ({
           userId: u.id,
           userName: u.name || 'User',
           characterName: u.character!.name,
@@ -57,8 +59,8 @@ export async function updateLeaderboard(
       })
 
       rankings = streakUsers
-        .filter((u) => u.character && u.streak)
-        .map((u, i) => ({
+        .filter((u: any) => u.character && u.streak)
+        .map((u: any, i: number) => ({
           userId: u.id,
           userName: u.name || 'User',
           characterName: u.character!.name,
@@ -68,7 +70,7 @@ export async function updateLeaderboard(
         }))
       break
 
-    case 'TOTAL_EXP':
+    case 'EXP':
       const expUsers = await prisma.user.findMany({
         include: {
           character: true,
@@ -82,8 +84,8 @@ export async function updateLeaderboard(
       })
 
       rankings = expUsers
-        .filter((u) => u.character)
-        .map((u, i) => ({
+        .filter((u: any) => u.character)
+        .map((u: any, i: number) => ({
           userId: u.id,
           userName: u.name || 'User',
           characterName: u.character!.name,

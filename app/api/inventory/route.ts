@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import {
   getInventory,
-  useItem,
+  consumeItem,
   purchaseItem,
   equipItem,
 } from '@/lib/inventory/inventory'
@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const validated = useItemSchema.parse(body)
 
-    const result = await useItem(session.user.id, validated.itemId)
+    const result = await consumeItem(session.user.id, validated.itemId)
 
     if (!result.success) {
       return NextResponse.json({ error: result.message }, { status: 400 })

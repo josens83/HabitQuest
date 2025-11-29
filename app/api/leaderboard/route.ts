@@ -2,7 +2,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { getLeaderboard, getUserRank } from '@/lib/social/leaderboards'
-import { LeaderboardType, LeaderboardPeriod } from '@prisma/client'
+
+type LeaderboardType = 'LEVEL' | 'EXP' | 'STREAK' | 'HABITS' | 'QUESTS'
+type LeaderboardPeriod = 'ALL_TIME' | 'MONTHLY' | 'WEEKLY' | 'DAILY'
 
 export async function GET(request: NextRequest) {
   try {

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useQuery, useMutation, useQueryClient } from '@tantml:react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { LoadingState, ErrorState, EmptyState } from '@/components/ui/states'
@@ -354,10 +354,14 @@ export default function GuildsPage() {
                   icon="🏰"
                   title="가입한 길드가 없습니다"
                   description="새 길드를 만들거나 인기 길드 탭에서 길드에 가입해보세요!"
-                  action={{
-                    label: '새 길드 만들기',
-                    onClick: () => setShowCreateForm(true),
-                  }}
+                  action={
+                    <button
+                      onClick={() => setShowCreateForm(true)}
+                      className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+                    >
+                      새 길드 만들기
+                    </button>
+                  }
                 />
               )}
             </>

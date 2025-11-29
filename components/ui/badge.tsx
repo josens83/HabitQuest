@@ -45,9 +45,10 @@ export function Badge({
 interface RarityBadgeProps {
   rarity: 'COMMON' | 'UNCOMMON' | 'RARE' | 'EPIC' | 'LEGENDARY'
   size?: 'sm' | 'md' | 'lg'
+  className?: string
 }
 
-export function RarityBadge({ rarity, size = 'md' }: RarityBadgeProps) {
+export function RarityBadge({ rarity, size = 'md', className }: RarityBadgeProps) {
   const config = {
     COMMON: { label: '일반', variant: 'default' as const },
     UNCOMMON: { label: '고급', variant: 'success' as const },
@@ -59,7 +60,7 @@ export function RarityBadge({ rarity, size = 'md' }: RarityBadgeProps) {
   const { label, variant } = config[rarity]
 
   return (
-    <Badge variant={variant} size={size}>
+    <Badge variant={variant} size={size} className={className}>
       {label}
     </Badge>
   )

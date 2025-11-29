@@ -126,9 +126,9 @@ export default function DashboardPage() {
                 </span>
               </div>
               <ProgressBar
-                current={data.character.currentExp}
+                value={data.character.currentExp}
                 max={data.character.expToNextLevel}
-                variant="info"
+                variant="default"
                 size="lg"
               />
             </div>
@@ -142,7 +142,7 @@ export default function DashboardPage() {
                 </span>
               </div>
               <ProgressBar
-                current={data.character.currentEnergy}
+                value={data.character.currentEnergy}
                 max={data.character.maxEnergy}
                 variant="success"
                 size="lg"
@@ -180,7 +180,7 @@ export default function DashboardPage() {
               <p className="text-sm text-gray-600 dark:text-gray-400">완료</p>
             </div>
             <ProgressBar
-              current={data.todayHabits.completed}
+              value={data.todayHabits.completed}
               max={data.todayHabits.total}
               variant="success"
               size="lg"
@@ -222,9 +222,9 @@ export default function DashboardPage() {
                   </span>
                 </div>
                 <ProgressBar
-                  current={data.quests.daily.completed}
+                  value={data.quests.daily.completed}
                   max={data.quests.daily.total}
-                  variant="info"
+                  variant="default"
                 />
               </div>
               <div>
@@ -237,9 +237,9 @@ export default function DashboardPage() {
                   </span>
                 </div>
                 <ProgressBar
-                  current={data.quests.weekly.completed}
+                  value={data.quests.weekly.completed}
                   max={data.quests.weekly.total}
-                  variant="purple"
+                  variant="warning"
                 />
               </div>
             </div>

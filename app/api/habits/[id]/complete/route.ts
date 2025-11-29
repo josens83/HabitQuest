@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
-import { calculateExpForLevel } from '@/lib/exp'
+import { calculateExpToNextLevel } from '@/lib/exp'
 import { checkQuestTrigger } from '@/lib/quest/quest'
 import { checkAchievementProgress } from '@/lib/achievements/achievements'
 
@@ -71,7 +71,7 @@ export async function POST(
 
     // Calculate rewards
     let expGained = habit.expReward
-    let goldGained = habit.goldReward
+    const goldGained = habit.goldReward
     let streakBonus = 0
 
     // Check if continuing streak (completed yesterday)
@@ -98,14 +98,14 @@ export async function POST(
 
     // Update character exp and gold
     const newExp = character.currentExp + expGained
-    const expToNextLevel = calculateExpForLevel(character.level + 1)
+    const expToNextLevel = calculateExpToNextLevel(character.level + 1)
 
     let newLevel = character.level
     let remainingExp = newExp
 
     // Handle level ups
-    while (remainingExp >= calculateExpForLevel(newLevel + 1)) {
-      remainingExp -= calculateExpForLevel(newLevel + 1)
+    while (remainingExp >= calculateExpToNextLevel(newLevel + 1)) {
+      remainingExp -= calculateExpToNextLevel(newLevel + 1)
       newLevel++
     }
 
@@ -155,14 +155,12 @@ export async function POST(
     })
 
     // Trigger quest progress checks
-    await checkQuestTrigger(userId, 'COMPLETE_HABIT', {
-      habitId,
-      category: habit.category,
-    })
+    await checkQuestTrigger(userId, 'COMPLETE_HABIT', habitId)
 
     // Check achievement progress
-    await checkAchievementProgress(userId, 'TOTAL_COMPLETIONS')
-    await checkAchievementProgress(userId, 'LONGEST_STREAK')
+    const totalCompletions = await prisma.habitCompletion.count({ where: { habit: { userId } } })
+    await checkAchievementProgress(userId, 'TOTAL_COMPLETIONS', totalCompletions)
+    await checkAchievementProgress(userId, 'LONGEST_STREAK', newStreak)
 
     // Log activity
     await prisma.activityLog.create({

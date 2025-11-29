@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
       },
     })
 
-    const habitsWithStats = habits.map((habit) => ({
+    const habitsWithStats = habits.map((habit: any) => ({
       id: habit.id,
       name: habit.name,
       description: habit.description,
@@ -61,8 +61,8 @@ export async function GET(request: NextRequest) {
 
     // Calculate stats
     const total = habitsWithStats.length
-    const completedToday = habitsWithStats.filter((h) => h.isCompletedToday).length
-    const activeStreaks = habitsWithStats.filter((h) => h.currentStreak > 0).length
+    const completedToday = habitsWithStats.filter((h: any) => h.isCompletedToday).length
+    const activeStreaks = habitsWithStats.filter((h: any) => h.currentStreak > 0).length
 
     return NextResponse.json({
       habits: habitsWithStats,

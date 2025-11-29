@@ -1,5 +1,7 @@
-import prisma from '@/lib/prisma'
-import { QuestTargetType, QuestType } from '@prisma/client'
+import { prisma } from '@/lib/prisma'
+
+type QuestTargetType = 'COMPLETE_HABIT' | 'COMPLETE_QUEST' | 'REACH_LEVEL' | 'EARN_ACHIEVEMENT'
+type QuestType = 'DAILY' | 'WEEKLY' | 'EVENT' | 'STORY'
 
 export interface QuestProgressUpdate {
   questId: string
@@ -179,7 +181,7 @@ export async function claimQuestReward(
     expGained: quest.expReward,
     goldGained: quest.goldReward,
     gemGained: quest.gemReward,
-    itemsGained: items || [],
+    itemsGained: [],
   }
 }
 

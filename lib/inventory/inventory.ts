@@ -1,5 +1,7 @@
-import prisma from '@/lib/prisma'
-import { ItemCategory, ItemType } from '@prisma/client'
+import { prisma } from '@/lib/prisma'
+
+type ItemCategory = string
+type ItemType = 'CONSUMABLE' | 'COSMETIC' | 'BOOST' | 'SPECIAL'
 
 export interface UseItemResult {
   success: boolean
@@ -7,7 +9,7 @@ export interface UseItemResult {
   effects?: Array<{ type: string; value: number; duration?: number }>
 }
 
-export async function useItem(
+export async function consumeItem(
   userId: string,
   itemId: string,
 ): Promise<UseItemResult> {

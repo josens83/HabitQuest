@@ -1,4 +1,4 @@
-import prisma from '@/lib/prisma'
+import { prisma } from '@/lib/prisma'
 
 export async function createGuild(userId: string, name: string, emblem: string) {
   // Check if user is already in a guild
@@ -64,7 +64,7 @@ export async function joinGuild(userId: string, guildId: string) {
   }
 
   // Check if user is already in this guild
-  const existingMember = guild.members.find((m) => m.userId === userId)
+  const existingMember = guild.members.find((m: any) => m.userId === userId)
   if (existingMember) {
     return {
       success: false,
@@ -115,7 +115,7 @@ export async function leaveGuild(userId: string) {
 
   // If leader and has other members, transfer leadership
   if (membership.role === 'LEADER' && membership.guild.members.length > 1) {
-    const newLeader = membership.guild.members.find((m) => m.userId !== userId)
+    const newLeader = membership.guild.members.find((m: any) => m.userId !== userId)
     if (newLeader) {
       await prisma.guildMember.update({
         where: { id: newLeader.id },

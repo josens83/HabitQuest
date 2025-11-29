@@ -1,4 +1,3 @@
-import { PaymentProvider } from '@prisma/client'
 import { TossPaymentsProvider } from './toss'
 import { StripeProvider } from './stripe'
 import {
@@ -9,6 +8,8 @@ import {
   PaymentResult,
   SUBSCRIPTION_PLANS,
 } from './types'
+
+type PaymentProvider = 'TOSS_PAYMENTS' | 'STRIPE' | 'PAYPAL'
 
 export class PaymentManager {
   private providers: Map<PaymentProvider, IPaymentProvider>

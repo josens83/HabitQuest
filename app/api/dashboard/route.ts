@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
-import { calculateExpForLevel } from '@/lib/exp'
+import { calculateExpToNextLevel } from '@/lib/exp'
 
 export async function GET(request: NextRequest) {
   try {
@@ -68,10 +68,10 @@ export async function GET(request: NextRequest) {
     })
 
     const dailyCompleted = dailyQuests.filter(
-      (q) => q.progress[0]?.isCompleted,
+      (q: any) => q.progress[0]?.isCompleted,
     ).length
     const weeklyCompleted = weeklyQuests.filter(
-      (q) => q.progress[0]?.isCompleted,
+      (q: any) => q.progress[0]?.isCompleted,
     ).length
 
     const pendingRewards = await prisma.questProgress.count({
@@ -121,7 +121,7 @@ export async function GET(request: NextRequest) {
     // Calculate total exp earned (approximation based on level)
     const totalExpEarned = character.totalExp || character.currentExp
 
-    const expToNextLevel = calculateExpForLevel(character.level + 1)
+    const expToNextLevel = calculateExpToNextLevel(character.level + 1)
 
     return NextResponse.json({
       character: {
@@ -151,7 +151,7 @@ export async function GET(request: NextRequest) {
         },
         pendingRewards,
       },
-      recentAchievements: recentAchievements.map((ua) => ({
+      recentAchievements: recentAchievements.map((ua: any) => ({
         id: ua.achievement.id,
         title: ua.achievement.title,
         icon: ua.achievement.icon,

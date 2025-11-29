@@ -3,7 +3,7 @@ import { PrismaAdapter } from '@next-auth/prisma-adapter'
 import GoogleProvider from 'next-auth/providers/google'
 import KakaoProvider from 'next-auth/providers/kakao'
 import AppleProvider from 'next-auth/providers/apple'
-import prisma from '@/lib/prisma'
+import { prisma } from '@/lib/prisma'
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -156,7 +156,7 @@ export const authOptions: NextAuthOptions = {
           })
 
           await prisma.userAchievement.createMany({
-            data: allAchievements.map((achievement) => ({
+            data: allAchievements.map((achievement: any) => ({
               userId: user.id,
               achievementId: achievement.id,
             })),

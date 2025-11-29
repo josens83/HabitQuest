@@ -6,7 +6,7 @@ import { authOptions } from '@/lib/auth'
 export const dynamic = 'force-dynamic'
 
 import { prisma } from '@/lib/prisma'
-import { calculateExpForLevel } from '@/lib/exp'
+import { calculateExpToNextLevel } from '@/lib/exp'
 
 // GET /api/character - Get user's character
 export async function GET(request: NextRequest) {
@@ -77,11 +77,11 @@ export async function GET(request: NextRequest) {
       ? Math.floor((Date.now() - user.createdAt.getTime()) / (1000 * 60 * 60 * 24)) + 1
       : 1
 
-    const expToNextLevel = calculateExpForLevel(character.level + 1)
+    const expToNextLevel = calculateExpToNextLevel(character.level + 1)
 
     // Map equipped items to slots
     const equipmentSlots = ['head', 'body', 'weapon', 'accessory', 'pet', 'background']
-    const equippedItemsMap = equippedItems.reduce((acc: any, item) => {
+    const equippedItemsMap = equippedItems.reduce((acc: any, item: any) => {
       acc[item.item.category.toLowerCase()] = item
       return acc
     }, {})

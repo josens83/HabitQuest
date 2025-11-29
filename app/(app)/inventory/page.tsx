@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { ItemCard } from '@/components/game/item-card'
@@ -43,7 +44,7 @@ async function fetchInventory(): Promise<InventoryResponse> {
   return response.json()
 }
 
-async function useItem(itemId: string) {
+async function consumeItem(itemId: string) {
   const response = await fetch('/api/inventory', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -78,8 +79,8 @@ export default function InventoryPage() {
     queryFn: fetchInventory,
   })
 
-  const useMutation = useMutation({
-    mutationFn: useItem,
+  const consumeMutation = useMutation({
+    mutationFn: consumeItem,
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['inventory'] })
       queryClient.invalidateQueries({ queryKey: ['character'] })
@@ -103,7 +104,7 @@ export default function InventoryPage() {
 
   const handleUse = (itemId: string) => {
     if (confirm('이 아이템을 사용하시겠습니까?')) {
-      useMutation.mutate(itemId)
+      consumeMutation.mutate(itemId)
     }
   }
 
@@ -184,10 +185,16 @@ export default function InventoryPage() {
               ? '아직 보유한 아이템이 없습니다. 상점에서 아이템을 구매해보세요!'
               : '이 카테고리에 아이템이 없습니다.'
           }
-          action={{
-            label: '상점 가기',
-            href: '/shop',
-          }}
+          action={
+            filterType === 'all' ? (
+              <Link
+                href="/shop"
+                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors inline-block"
+              >
+                상점 가기
+              </Link>
+            ) : undefined
+          }
         />
       )}
 

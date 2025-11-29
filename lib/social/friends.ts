@@ -1,5 +1,6 @@
-import prisma from '@/lib/prisma'
-import { FriendshipStatus } from '@prisma/client'
+import { prisma } from '@/lib/prisma'
+
+type FriendshipStatus = 'PENDING' | 'ACCEPTED' | 'REJECTED' | 'BLOCKED'
 
 export async function sendFriendRequest(requesterId: string, addresseeId: string) {
   // Check if already friends or request exists
@@ -138,7 +139,7 @@ export async function getFriends(userId: string) {
     },
   })
 
-  const friendIds = friendships.map((f) =>
+  const friendIds = friendships.map((f: any) =>
     f.requesterId === userId ? f.addresseeId : f.requesterId,
   )
 

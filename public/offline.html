@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>오프라인 - HabitQuest</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+          'Helvetica Neue', Arial, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+
+      .container {
+        text-align: center;
+        max-width: 500px;
+      }
+
+      .icon {
+        width: 120px;
+        height: 120px;
+        margin: 0 auto 2rem;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(10px);
+      }
+
+      .icon svg {
+        width: 60px;
+        height: 60px;
+      }
+
+      h1 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        font-weight: 700;
+      }
+
+      p {
+        font-size: 1.125rem;
+        margin-bottom: 2rem;
+        opacity: 0.9;
+        line-height: 1.6;
+      }
+
+      .retry-button {
+        display: inline-block;
+        padding: 14px 32px;
+        background: white;
+        color: #667eea;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1rem;
+        text-decoration: none;
+        transition: transform 0.2s, box-shadow 0.2s;
+        cursor: pointer;
+        border: none;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      }
+
+      .retry-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+      }
+
+      .retry-button:active {
+        transform: translateY(0);
+      }
+
+      .features {
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .features h2 {
+        font-size: 1.25rem;
+        margin-bottom: 1rem;
+        opacity: 0.9;
+      }
+
+      .features ul {
+        list-style: none;
+        text-align: left;
+        display: inline-block;
+      }
+
+      .features li {
+        padding: 0.5rem 0;
+        opacity: 0.8;
+      }
+
+      .features li::before {
+        content: '✓ ';
+        margin-right: 0.5rem;
+        font-weight: bold;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+
+      .pulse {
+        animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="icon pulse">
+        <svg
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M18.364 5.636a9 9 0 010 12.728m0 0l-2.829-2.829m2.829 2.829L21 21M15.536 8.464a5 5 0 010 7.072m0 0l-2.829-2.829m-4.243 2.829a4.978 4.978 0 01-1.414-2.83m-1.414 5.658a9 9 0 01-2.167-9.238m7.824 2.167a1 1 0 111.414 1.414m-1.414-1.414L3 3m8.293 8.293l1.414 1.414"
+          ></path>
+        </svg>
+      </div>
+
+      <h1>오프라인 상태입니다</h1>
+      <p>
+        인터넷 연결이 끊어졌습니다.<br />
+        연결을 확인하고 다시 시도해 주세요.
+      </p>
+
+      <button class="retry-button" onclick="window.location.reload()">
+        다시 시도하기
+      </button>
+
+      <div class="features">
+        <h2>💡 오프라인에서도 가능한 기능</h2>
+        <ul>
+          <li>이전에 본 페이지 확인</li>
+          <li>캐시된 데이터 조회</li>
+          <li>오늘의 습관 목록 확인</li>
+        </ul>
+      </div>
+    </div>
+
+    <script>
+      // Check connection status
+      window.addEventListener('online', () => {
+        window.location.reload()
+      })
+
+      // Retry button
+      function retry() {
+        if (navigator.onLine) {
+          window.location.href = '/'
+        } else {
+          alert('아직 인터넷에 연결되어 있지 않습니다.')
+        }
+      }
+    </script>
+  </body>
+</html>

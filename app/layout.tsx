@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   description: 'RPG 캐릭터 육성처럼 재미있게 습관을 형성하는 게이미피케이션 앱',
   keywords: ['습관', '게이미피케이션', 'RPG', '자기계발', '스트릭'],
   authors: [{ name: 'HabitQuest Team' }],
+  manifest: '/manifest.json',
   viewport: {
     width: 'device-width',
     initialScale: 1,
@@ -15,6 +16,16 @@ export const metadata: Metadata = {
     { media: '(prefers-color-scheme: light)', color: '#6366F1' },
     { media: '(prefers-color-scheme: dark)', color: '#818CF8' },
   ],
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'HabitQuest',
+  },
+  applicationName: 'HabitQuest',
+  icons: {
+    icon: '/icons/icon.svg',
+    apple: '/icons/icon.svg',
+  },
 }
 
 export default function RootLayout({

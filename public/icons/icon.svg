@@ -1,0 +1,20 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="512" height="512" fill="#6366f1" rx="64"/>
+
+  <!-- Quest Scroll Icon -->
+  <g transform="translate(128, 128)">
+    <!-- Scroll background -->
+    <path d="M30 0 L226 0 C246 0 256 10 256 30 L256 226 C256 246 246 256 226 256 L30 256 C10 256 0 246 0 226 L0 30 C0 10 10 0 30 0 Z" fill="#fef3c7"/>
+
+    <!-- Checkmark -->
+    <path d="M80 140 L110 170 L180 90" stroke="#10b981" stroke-width="20" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+
+    <!-- Quest lines -->
+    <line x1="40" y1="60" x2="216" y2="60" stroke="#92400e" stroke-width="8" stroke-linecap="round"/>
+    <line x1="40" y1="200" x2="150" y2="200" stroke="#92400e" stroke-width="8" stroke-linecap="round"/>
+  </g>
+
+  <!-- HQ Text -->
+  <text x="256" y="420" font-family="Arial, sans-serif" font-size="120" font-weight="bold" fill="white" text-anchor="middle">HQ</text>
+</svg>
